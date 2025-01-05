@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="he">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>טבלה של פונקציות API</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            direction: rtl;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ORDER</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>CRUD</th>
+                <th>כתובת</th>
+                <th>פרמטרים</th>
+                <th>Body</th>
+                <th>מה עושה</th>
+                <th>איזה סוגי שגיאות יכולות לחזור</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>/api/orders</td>
+                <td>אין</td>
+                <td>אין</td>
+                <td>שליפת כל ההזמנות</td>
+                <td>400 - בעיית שרת, לא ניתן לשלוף את ההזמנות</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/orders</td>
+                <td>body: userId, address, products</td>
+                <td>נתוני הזמנה במבנה JSON (כולל כתובת, מוצרים, userId)</td>
+                <td>הוספת הזמנה חדשה</td>
+                <td>404 - אם לא נמצא משתמש עם userId, 400 - אם לא כל הפרמטרים נמסרו</td>
+            </tr>
+            <tr>
+                <td>DELETE</td>
+                <td>/api/orders/:id</td>
+                <td>id</td>
+                <td>אין</td>
+                <td>מחיקת הזמנה על פי מזהה, אם היא לא יצאה לדרך</td>
+                <td>404 - לא נמצא הזמנה עם ה-ID הזה, 400 - לא ניתן למחוק הזמנה שנשלחה</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/orders/:id</td>
+                <td>userId</td>
+                <td>אין</td>
+                <td>שליפת כל ההזמנות של משתמש מסוים</td>
+                <td>404 - לא נמצאו הזמנות עם ה-userId הזה</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/api/orders/:id</td>
+                <td>id</td>
+                <td>אין (מעודכן בשרת)</td>
+                <td>עדכון סטטוס ההזמנה ל-"נשלחה"</td>
+                <td>404 - לא נמצא הזמנה עם ה-ID הזה</td>
+            </tr>
+        </tbody>
+    </table>
+    <h1>PRODUCT</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>CRUD</th>
+                <th>כתובת</th>
+                <th>פרמטרים</th>
+                <th>Body</th>
+                <th>מה עושה</th>
+                <th>איזה סוגי שגיאות יכולות לחזור</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>/api/products</td>
+                <td>אין</td>
+                <td>אין</td>
+                <td>שליפת כל המוצרים</td>
+                <td>400 - בעיית שרת, לא ניתן לשלוף את המוצרים</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/products/:id</td>
+                <td>id</td>
+                <td>אין</td>
+                <td>שליפת מוצר על פי מזהה</td>
+                <td>404 - לא נמצא מוצר עם ה-ID הזה</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/products</td>
+                <td>body: name, price</td>
+                <td>שם המוצר ומחירו במבנה JSON</td>
+                <td>הוספת מוצר חדש</td>
+                <td>404 - אם לא נמסרו שם או מחיר, 400 - בעיית שרת בהוספת המוצר</td>
+            </tr>
+            <tr>
+                <td>DELETE</td>
+                <td>/api/products/:id</td>
+                <td>id</td>
+                <td>אין</td>
+                <td>מחיקת מוצר על פי מזהה</td>
+                <td>404 - לא נמצא מוצר עם ה-ID הזה</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/api/products/:id</td>
+                <td>id</td>
+                <td>שם המוצר ומחירו במבנה JSON</td>
+                <td>עדכון מוצר על פי מזהה</td>
+                <td>404 - לא נמצא מוצר עם ה-ID הזה, 404 - אם לא נמסרו שם או מחיר</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1>USER</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>CRUD</th>
+                <th>כתובת</th>
+                <th>פרמטרים</th>
+                <th>Body</th>
+                <th>מה עושה</th>
+                <th>איזה סוגי שגיאות יכולות לחזור</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>GET</td>
+                <td>/api/users</td>
+                <td>אין</td>
+                <td>אין</td>
+                <td>שליפת כל המשתמשים (ללא סיסמאות)</td>
+                <td>400 - בעיית שרת בשל שליפת המשתמשים</td>
+            </tr>
+            <tr>
+                <td>GET</td>
+                <td>/api/users/:id</td>
+                <td>id</td>
+                <td>אין</td>
+                <td>שליפת משתמש לפי מזהה (ללא סיסמאות)</td>
+                <td>404 - לא נמצא משתמש עם ה-ID הזה</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/users</td>
+                <td>body: email, password</td>
+                <td>שם משתמש, סיסמא במבנה JSON</td>
+                <td>הוספת משתמש חדש</td>
+                <td>400 - אם לא נמסרו פרטי סיסמא או דוא"ל</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/api/users/:id</td>
+                <td>id</td>
+                <td>שם המשתמש/מייל/שדות אחרים במבנה JSON (לא סיסמא)</td>
+                <td>עדכון פרטי משתמש (ללא סיסמא)</td>
+                <td>404 - לא ניתן לעדכן את הסיסמא, 404 - לא נמצא משתמש עם ה-ID הזה</td>
+            </tr>
+            <tr>
+                <td>PUT</td>
+                <td>/api/users/password/:id/</td>
+                <td>id</td>
+                <td>password במבנה JSON</td>
+                <td>עדכון סיסמא של משתמש</td>
+                <td>404 - לא נמצא משתמש עם ה-ID הזה, 404 - ניסה לעדכן פרטים אחרים כמו שם או דוא"ל</td>
+            </tr>
+            <tr>
+                <td>POST</td>
+                <td>/api/users/:id</td>
+                <td>body: userName, password</td>
+                <td>שם משתמש וסיסמא במבנה JSON</td>
+                <td>כניסת משתמש עם שם וסיסמא</td>
+                <td>404 - שם המשתמש או הסיסמא לא נכונים</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+
+</html>
