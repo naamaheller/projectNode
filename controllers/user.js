@@ -1,4 +1,5 @@
 import { userModel } from "../models/user.js";
+import { generateToken } from "../utils/generateToken.js";
 
 // שליפת כל המשתמשים 
 export const getAllUser = async (req, res) => {
@@ -97,24 +98,34 @@ export const updatePassword = async (req, res) => {
 // כניסה 
 export async function getUserByUsernamePassword_Login(req, res) {
     try {
-        let data = await userModel.findOne({
-            username: req.body.userName,
-            password: req.body.password  // שימוש בסיסמה כטקסט רגיל (לא מאובטח!)
-        }).select('-password');
+        const { userName, password } = req.body;
 
-        if (!data) {
-            return res.status(404).json({
-                title: "cannot find user",
-                message: "wrong username or password"
-            });
+        if (!userName || !password) {
+            return res.status(400).json({ title: "Missing fields", message: "Username and password are required" });
         }
 
-        res.json(data);
+        // חיפוש משתמש לפי שם משתמש
+        let user = await userModel.findOne({ userName }).lean();
+        if (!user) {
+            return res.status(404).json({ title: "User not found", message: "No user found with this username" });
+        }
+
+        // בדיקת התאמת סיסמה (השוואה פשוטה)
+        if (user.password !== password) {
+            return res.status(401).json({ title: "Incorrect password", message: "Wrong password" });
+        }
+
+        // יצירת טוקן
+        let token = generateToken({ id: user._id, userName: user.userName, role: "USER" });
+
+        // מחיקת הסיסמה מהאובייקט שנשלח ללקוח
+        const { password: _, ...userData } = user;
+        userData.token = token;
+
+        res.json(userData);
     } catch (err) {
-        console.log(err);
-        res.status(400).json({
-            title: "cannot log in user",
-            message: err.message
-        });
+        console.error(err);
+        res.status(500).json({ title: "Server error", message: err.message });
     }
 }
+
