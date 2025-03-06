@@ -28,15 +28,28 @@ export const getById = async (req, res) => {
 // הוספת משתמש
 export const addUser = async (req, res) => {
     let { body } = req;
-    if (!body.password || !body.email)
-        return res.status(400).json({ title: "cannot add user", message: "password and email are required" });
 
-    if (!(body.password.length >= 6 && (body.password.match(/\d/g) || []).length >= 4 && (body.password.match(/[a-zA-Z]/g) || []).length >= 2))
+    // בדיקת חובה
+    if (!body.password || !body.email) {
+        return res.status(400).json({ title: "cannot add user", message: "password and email are required" });
+    }
+
+    // בדיקת חוזק סיסמה
+    if (!(body.password.length >= 6 && (body.password.match(/\d/g) || []).length >= 4 && (body.password.match(/[a-zA-Z]/g) || []).length >= 2)) {
         return res.status(400).json({ title: "invalid password", message: "password must be at least 6 characters long, contain at least 4 numbers and 2 letters" });
+    }
 
     try {
+        let existingUser = await userModel.findOne({ email: body.email });
+
+        if (existingUser) {
+            return res.status(400).json({ title: "email already exists", message: "A user with this email already exists" });
+        }
+
+        // אם אין משתמש כזה, צור משתמש חדש
         let newUser = new userModel(body);
         await newUser.save();
+
         res.json(newUser);
     }
     catch (err) {
@@ -74,7 +87,7 @@ export const updatePassword = async (req, res) => {
     try {
         let data = await userModel.findByIdAndUpdate(id, { password: body.password }, { new: true });
         if (!data) return res.status(404).json({ title: "cannot update by id", message: "user with such id not found" });
-        res.json(data);
+            res.json(data);
     } catch (err) {
         console.log(err);
         res.status(400).json({ title: "cannot update", message: err.message });
@@ -105,4 +118,3 @@ export async function getUserByUsernamePassword_Login(req, res) {
         });
     }
 }
-
